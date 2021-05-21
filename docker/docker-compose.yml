@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  zoo1:
+    # 使用zookeeper:3.4.14镜像，加上tag标签
+    image: zookeeper:3.4.14
+    restart: always
+    hostname: zoo1
+    container_name: zk1
+    ports:
+      - 2181:2181
+    volumes:
+    # 宿主机目录路径无需手工创建，docker-compose有权限进行自行创建挂载的目录路径    
+      - ./data/zk_docker_cluster/zoo1/data:/data
+      - ./data/zk_docker_cluster/zoo1/datalog:/datalog
+      - ./data/zk_docker_cluster/zoo1/logs:/logs
+      
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+  zoo2:
+    image: zookeeper
+    restart: always
+    hostname: zoo2
+    container_name: zk2
+    ports:
+      - 2182:2181
+    volumes:
+      - ./data/zk_docker_cluster/zoo2/data:/data
+      - ./data/zk_docker_cluster/zoo2/datalog:/datalog
+      - ./data/zk_docker_cluster/zoo2/logs:/logs      
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+  zoo3:
+    image: zookeeper
+    restart: always
+    hostname: zoo3
+    container_name: zk3
+    ports:
+      - 2183:2181
+    volumes:
+      - ./data/zk_docker_cluster/zoo3/data:/data
+      - ./data/zk_docker_cluster/zoo3/datalog:/datalog
+      - ./data/zk_docker_cluster/zoo3/logs:/logs      
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
